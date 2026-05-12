@@ -2,9 +2,15 @@ const joystickPad = document.getElementById("joystickPad");
 const joystickKnob = document.getElementById("joystickKnob");
 
 const deadZone = 0.16;
+const controlEndpoint = "/api/control";
+const sendIntervalMs = 90;
+
 const activeState = {
   pointerId: null,
   intensity: 0,
+  vector: { x: 0, y: 0 },
+  lastSentAt: 0,
+  lastPayload: null,
 };
 
 function clamp(value, min, max) {
@@ -35,10 +41,53 @@ function setKnobPosition(x, y) {
   joystickKnob.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
 }
 
+async function sendControl(dx, dy, dalpha) {
+  const payload = { dx, dy, dalpha };
+  const now = Date.now();
+
+  const unchanged =
+    activeState.lastPayload &&
+    activeState.lastPayload.dx === dx &&
+    activeState.lastPayload.dy === dy &&
+    activeState.lastPayload.dalpha === dalpha;
+
+  if (unchanged && now - activeState.lastSentAt < sendIntervalMs) {
+    return;
+  }
+
+  activeState.lastPayload = payload;
+  activeState.lastSentAt = now;
+
+  try {
+    await fetch(controlEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    });
+  } catch (error) {
+    // Ignore transient network errors during active joystick movement.
+  }
+}
+
+function applyJoystickControl(normalizedX, normalizedY) {
+  const inDeadZone = Math.hypot(normalizedX, normalizedY) < deadZone;
+  const dx = inDeadZone ? 0 : -normalizedY;
+  const dy = inDeadZone ? 0 : normalizedX;
+  const dalpha = 0;
+
+  activeState.vector.x = normalizedX;
+  activeState.vector.y = normalizedY;
+  sendControl(dx, dy, dalpha);
+}
+
 function resetJoystick() {
   activeState.pointerId = null;
   activeState.intensity = 0;
+  activeState.vector.x = 0;
+  activeState.vector.y = 0;
   setKnobPosition(0, 0);
+  sendControl(0, 0, 0);
 }
 
 joystickPad.addEventListener("pointerdown", (event) => {
@@ -84,6 +133,7 @@ function updateJoystick(event) {
   activeState.intensity = state.intensity;
 
   setKnobPosition(x, y);
+  applyJoystickControl(normalizedX, normalizedY);
 }
 
 window.addEventListener("keydown", (event) => {
@@ -109,4 +159,18 @@ window.addEventListener("keydown", (event) => {
     droite: { x: offset, y: 0 },
   }[direction];
   setKnobPosition(movement.x, movement.y);
+
+  const normalizedMovement = {
+    haut: { x: 0, y: -1 },
+    bas: { x: 0, y: 1 },
+    gauche: { x: -1, y: 0 },
+    droite: { x: 1, y: 0 },
+  }[direction];
+  applyJoystickControl(normalizedMovement.x, normalizedMovement.y);
+});
+
+window.addEventListener("keyup", (event) => {
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+    resetJoystick();
+  }
 });
