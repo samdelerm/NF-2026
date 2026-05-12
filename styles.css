@@ -1,0 +1,382 @@
+:root {
+  color-scheme: dark;
+  --bg-1: #05030d;
+  --bg-2: #11142d;
+  --bg-3: #14274d;
+  --card: rgba(11, 12, 24, 0.72);
+  --card-border: rgba(255, 255, 255, 0.16);
+  --text: #fff7eb;
+  --muted: #c6c6df;
+  --accent: #ffd56a;
+  --accent-2: #ff6b9d;
+  --accent-3: #55e7ff;
+  --shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 107, 157, 0.18), transparent 22%),
+    radial-gradient(circle at 84% 16%, rgba(85, 231, 255, 0.15), transparent 20%),
+    radial-gradient(circle at 52% 82%, rgba(255, 213, 106, 0.12), transparent 22%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-2) 58%, var(--bg-3));
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at center, black 48%, transparent 90%);
+  opacity: 0.75;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 107, 157, 0.18), transparent 18%),
+    radial-gradient(circle at 75% 25%, rgba(85, 231, 255, 0.16), transparent 16%),
+    radial-gradient(circle at 60% 75%, rgba(255, 213, 106, 0.14), transparent 18%);
+  filter: blur(44px);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+.shell {
+  width: min(1200px, calc(100% - 22px));
+  margin: 0 auto;
+  padding: 10px 0 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 30%, rgba(255, 213, 106, 0.06)),
+    linear-gradient(320deg, transparent 55%, rgba(255, 107, 157, 0.08) 70%, transparent 78%);
+  pointer-events: none;
+}
+
+.control-panel {
+  padding: 16px;
+}
+
+.joystick-shell {
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+
+.partner-row {
+  width: min(100%, 1040px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.partner-logo {
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  box-shadow: inset 0 0 28px rgba(255, 255, 255, 0.05), 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.partner-logo::before,
+.partner-logo::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+}
+
+.partner-logo::before {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.partner-logo::after {
+  inset: 30%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15));
+}
+
+.partner-logo-lycee {
+  background: linear-gradient(135deg, rgba(255, 213, 106, 0.24), rgba(255, 107, 157, 0.12));
+}
+
+.partner-logo-lycee::after {
+  clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%);
+}
+
+.partner-logo-region {
+  background: linear-gradient(135deg, rgba(85, 231, 255, 0.22), rgba(85, 231, 255, 0.08));
+}
+
+.partner-logo-region::after {
+  border-radius: 42% 58% 40% 60% / 58% 42% 58% 42%;
+}
+
+.partner-logo-robotique {
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.22), rgba(255, 213, 106, 0.1));
+}
+
+.partner-logo-robotique::after {
+  clip-path: polygon(50% 0, 62% 28%, 92% 28%, 68% 46%, 78% 78%, 50% 60%, 22% 78%, 32% 46%, 8% 28%, 38% 28%);
+}
+
+.partner-logo-cap {
+  background: linear-gradient(135deg, rgba(131, 255, 207, 0.2), rgba(255, 213, 106, 0.1));
+}
+
+.partner-logo-cap::after {
+  inset: 26%;
+  border-radius: 50% 50% 12% 12%;
+  clip-path: polygon(12% 28%, 88% 28%, 72% 68%, 28% 68%);
+}
+
+.joystick-pad {
+  --pad-size: min(62vw, 560px);
+  width: var(--pad-size);
+  height: var(--pad-size);
+  position: relative;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  user-select: none;
+}
+
+.joystick-rings {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, rgba(255, 213, 106, 0.15) 0 12%, transparent 12% 28%, rgba(255, 107, 157, 0.1) 28% 29%, transparent 29% 46%, rgba(85, 231, 255, 0.08) 46% 47%, transparent 47% 100%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01) 68%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.joystick-rings::before,
+.joystick-rings::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.joystick-rings::after {
+  inset: 32%;
+  border-color: rgba(255, 213, 106, 0.3);
+  animation: pulse 3.4s ease-in-out infinite;
+}
+
+.joystick-base {
+  width: 42%;
+  height: 42%;
+  position: relative;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(20, 18, 41, 0.95), rgba(8, 8, 18, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 44px rgba(0, 0, 0, 0.34), 0 0 46px rgba(255, 213, 106, 0.12);
+}
+
+.joystick-knob {
+  width: 34%;
+  height: 34%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.98), rgba(255, 213, 106, 0.98) 18%, rgba(255, 107, 157, 0.7) 55%, rgba(85, 231, 255, 0.34) 100%);
+  box-shadow: 0 18px 36px rgba(255, 107, 157, 0.24), inset 0 0 16px rgba(255, 255, 255, 0.26);
+  transition: transform 90ms linear;
+}
+
+.joystick-knob::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.joystick-readout {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.joystick-readout span {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 20px rgba(255, 213, 106, 0.34);
+}
+
+.joystick-readout small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.side-panel {
+  gap: 12px;
+}
+
+.side-card {
+  padding: 16px;
+}
+
+.side-card p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+}
+
+.side-card strong {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.side-card-glow {
+  background: linear-gradient(135deg, rgba(255, 213, 106, 0.16), rgba(255, 107, 157, 0.1));
+  border-color: rgba(255, 213, 106, 0.18);
+}
+
+.controls-footer {
+  display: none;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0.98);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(2%, 1%, 0) scale(1.05);
+  }
+}
+
+.hero,
+.control-panel {
+  animation: rise 700ms ease both;
+}
+
+.control-panel {
+  animation-delay: 100ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-strip strong,
+.joystick-readout small,
+.lede,
+.controls-footer p {
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.25);
+}
+
+.status-strip strong {
+  color: #fff1d5;
+}
+
+.status-strip:hover {
+  border-color: rgba(255, 213, 106, 0.25);
+}
+
+.joystick-pad:hover .joystick-rings::after {
+  border-color: rgba(255, 107, 157, 0.32);
+}
+
+@media (max-width: 700px) {
+  .shell {
+    width: min(100% - 20px, 1080px);
+    padding-top: 18px;
+  }
+
+  .hero,
+  .control-panel {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .joystick-pad {
+    --pad-size: min(88vw, 480px);
+  }
+
+  .partner-row {
+    gap: 8px;
+  }
+
+  .joystick-readout span {
+    font-size: 1.08rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
